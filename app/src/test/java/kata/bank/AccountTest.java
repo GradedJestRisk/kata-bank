@@ -14,7 +14,7 @@ class AccountTest {
         @DisplayName("if balance is zero and a 1000 deposit is made, should return 1000")
         @Test void shouldReturn1000() {
             // given
-            Account account = new Account(0);
+            Account account = new Account(0, new TestClock(LocalDateTime.now()));
             int amount = 1000;
 
             // when
@@ -27,7 +27,7 @@ class AccountTest {
         @DisplayName("if balance is zero and a 2000 deposit is made, should return 2000")
         @Test void shouldReturn2000() {
             // given
-            Account account = new Account(0);
+            Account account = new Account(0,new TestClock(LocalDateTime.now()));
             int amount = 2000;
 
             // when
@@ -48,7 +48,7 @@ class AccountTest {
             int amount = 1000;
 
             // when
-            Account account = new Account(amount);
+            Account account = new Account(amount,new TestClock(LocalDateTime.now()));
 
             // then
             int balance = account.balance();
@@ -58,7 +58,7 @@ class AccountTest {
         @Test void shouldReturn2000() {
             // given
             int amount = 1000;
-            Account account = new Account(amount);
+            Account account = new Account(amount,new TestClock(LocalDateTime.now()));
 
             // when
             account.deposit(1000);
@@ -75,7 +75,9 @@ class AccountTest {
         @DisplayName("should return the last transaction date")
         @Test void shouldReturnLast() {
             // given
-            Account account = new Account(0);
+            LocalDateTime expected = LocalDateTime.now();
+            TestClock clock = new TestClock(expected);
+            Account account = new Account(0, clock);
             int amount = 1000;
             account.deposit(amount);
             account.deposit(amount);
@@ -84,7 +86,6 @@ class AccountTest {
             LocalDateTime lastTransaction = account.lastTransactionDate();
 
             // then
-            LocalDateTime expected = LocalDateTime.now();
             assertThat(lastTransaction).isEqualTo(expected);
         }
     }
