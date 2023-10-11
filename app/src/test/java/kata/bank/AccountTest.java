@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
+import java.time.LocalDateTime;
 
 @DisplayName("Account unit test")
 class AccountTest {
@@ -65,6 +66,26 @@ class AccountTest {
             // then
             int balance = account.balance();
             assertThat(balance).isEqualTo(2000);
+        }
+    }
+
+    @Nested
+    @DisplayName("#balance")
+    class lastTransaction {
+        @DisplayName("should return the last transaction date")
+        @Test void shouldReturnLast() {
+            // given
+            Account account = new Account(0);
+            int amount = 1000;
+            account.deposit(amount);
+            account.deposit(amount);
+
+            // when
+            LocalDateTime lastTransaction = account.lastTransactionDate();
+
+            // then
+            LocalDateTime expected = LocalDateTime.now();
+            assertThat(lastTransaction).isEqualTo(expected);
         }
     }
 

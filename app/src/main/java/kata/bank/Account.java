@@ -1,5 +1,7 @@
 package kata.bank;
 
+import java.time.LocalDateTime;
+
 public class Account {
 
     private int balance;
@@ -13,6 +15,9 @@ public class Account {
     }
     public int balance(){
         return balance;
+    }
+    public LocalDateTime lastTransactionDate(){
+        return LocalDateTime.now();
     }
 
 }
