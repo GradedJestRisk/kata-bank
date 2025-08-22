@@ -3,9 +3,17 @@ package kata.bank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.*;
-import java.time.LocalDateTime;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import java.time.Month;
+
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Account unit test")
 class AccountTest {
     @Nested
@@ -72,22 +80,53 @@ class AccountTest {
     @Nested
     @DisplayName("#balance")
     class lastTransaction {
-        @DisplayName("should return the last transaction date")
-        @Test void shouldReturnLast() {
-            // given
-            LocalDateTime expected = LocalDateTime.now();
-            TestClock clock = new TestClock(expected);
-            Account account = new Account(0, clock);
-            int amount = 1000;
-            account.deposit(amount);
-            account.deposit(amount);
 
-            // when
-            LocalDateTime lastTransaction = account.lastTransactionDate();
+        @Nested
+        @DisplayName("using manual mock")
+        class usingManualMock {
 
-            // then
-            assertThat(lastTransaction).isEqualTo(expected);
+        @DisplayName("should return today last transaction date")
+            @Test void shouldReturnLast() {
+                // given
+                LocalDateTime expected = LocalDateTime.now();
+                TestClock clock = new TestClock(expected);
+                Account account = new Account(0, clock);
+                int amount = 1000;
+                account.deposit(amount);
+                account.deposit(amount);
+
+                // when
+                LocalDateTime lastTransaction = account.lastTransactionDate();
+
+                // then
+                assertThat(lastTransaction).isEqualTo(expected);
+            }
         }
+
+        @Nested
+        @DisplayName("using mock library")
+        class usingMockito {
+        @Mock
+        Clock clock;
+
+            @DisplayName("should return yesterday last transaction date")
+            @Test void shouldReturnAnotherLast() {
+                // given
+                LocalDateTime expected = LocalDateTime.of(2023, Month.OCTOBER, 11, 14, 33);
+                when(clock.getTime()).thenReturn(expected);
+
+                Account account = new Account(0, clock);
+                int amount = 1000;
+                account.deposit(amount);
+                account.deposit(amount);
+
+                // when
+                LocalDateTime lastTransaction = account.lastTransactionDate();
+
+                // then
+                assertThat(lastTransaction).isEqualTo(expected);
+            }
+            }
     }
 
 }
